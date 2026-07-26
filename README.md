@@ -146,6 +146,15 @@ The optimized Wasm is produced under:
 target/wasm32v1-none/release/route_adapter.wasm
 ```
 
+## Tests
+
+The published suite covers invalid pair-shaped output requests and enforcement
+of the configured output recipient.
+
+```bash
+cargo +1.91.0 test --locked
+```
+
 ## Deployment outline
 
 Deploy the AMM and pool first so their addresses are known, then deploy the
