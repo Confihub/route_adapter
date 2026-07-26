@@ -149,3 +149,39 @@ fn initialize_adapter(
 fn bump_instance(env: &Env) {
     env.storage().instance().extend_ttl(TTL_THRESH, TTL_BUMP);
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use soroban_sdk::testutils::Address as _;
+
+    #[test]
+    fn swap_rejects_bad_output_shape() {
+        let env = Env::default();
+        let id = env.register(RouteAdapter, ());
+        let client = RouteAdapterClient::new(&env, &id);
+        let amm = Address::generate(&env);
+        let t0 = Address::generate(&env);
+        let t1 = Address::generate(&env);
+        let to = Address::generate(&env);
+        client.init(&amm, &t0, &t1);
+
+        assert!(client.try_swap(&0, &0, &to).is_err());
+        assert!(client.try_swap(&1, &1, &to).is_err());
+    }
+
+    #[test]
+    fn guarded_swap_rejects_wrong_recipient() {
+        let env = Env::default();
+        let id = env.register(RouteAdapter, ());
+        let client = RouteAdapterClient::new(&env, &id);
+        let amm = Address::generate(&env);
+        let t0 = Address::generate(&env);
+        let t1 = Address::generate(&env);
+        let recipient = Address::generate(&env);
+        let attacker = Address::generate(&env);
+        client.init_guarded(&amm, &t0, &t1, &recipient);
+
+        assert!(client.try_swap(&1, &0, &attacker).is_err());
+    }
+}

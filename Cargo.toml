@@ -17,6 +17,9 @@ doctest = false
 [dependencies]
 soroban-sdk = "25.3.2"
 
+[dev-dependencies]
+soroban-sdk = { version = "25.3.2", features = ["testutils"] }
+
 # Soroban contracts build as small, LTO'd cdylibs for wasm.
 [profile.release]
 opt-level = "z"
